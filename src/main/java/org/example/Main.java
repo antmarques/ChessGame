@@ -1,10 +1,12 @@
 package org.example;
 
-import entities.boardgame.BoardEntity;
-import entities.boardgame.PositionEntity;
+import chess.entities.ChessMatchEntity;
+import view.UI;
 
 public class Main {
     public static void main(String[] args) {
-        BoardEntity be = new BoardEntity(8, 8);
+        ChessMatchEntity chessMatch = new ChessMatchEntity();
+
+        UI.printBoard(chessMatch.getPieces());
     }
 }

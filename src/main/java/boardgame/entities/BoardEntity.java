@@ -1,4 +1,4 @@
-package entities.boardgame;
+package boardgame.entities;
 
 public class BoardEntity {
 
@@ -28,5 +28,13 @@ public class BoardEntity {
 
     public void setColumns(Integer columns) {
         this.columns = columns;
+    }
+
+    public PieceEntity piece(Integer row, Integer clumn){
+        return pieces[row][clumn];
+    }
+
+    public PieceEntity piece(PositionEntity position){
+        return pieces[position.getRow()][position.getColumn()];
     }
 }
