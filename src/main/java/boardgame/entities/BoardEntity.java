@@ -37,4 +37,9 @@ public class BoardEntity {
     public PieceEntity piece(PositionEntity position){
         return pieces[position.getRow()][position.getColumn()];
     }
+
+    public void placePiece(PieceEntity piece, PositionEntity position) {
+        pieces[position.getRow()][position.getColumn()] = piece;
+        piece.position = position;
+    }
 }
