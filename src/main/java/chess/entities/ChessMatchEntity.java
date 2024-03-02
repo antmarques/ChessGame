@@ -1,7 +1,6 @@
 package chess.entities;
 
 import boardgame.entities.BoardEntity;
-import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 
 public class ChessMatchEntity {
@@ -23,8 +22,15 @@ public class ChessMatchEntity {
         return mat;
     }
 
+    protected void placeNewPiece(Character column, Integer row, ChessPieceEntity piece){
+        board.placePiece(piece, new ChessPositionEntity(column, row).toPosition());
+    }
+
     private void initialSetup() {
-        board.placePiece(new RookEntity(board, ColorEnum.WHITHE), new PositionEntity(0, 0));
-        board.placePiece(new KingEntity(board, ColorEnum.WHITHE), new PositionEntity(0, 4));
+        placeNewPiece('a', 1, new RookEntity(board, ColorEnum.WHITHE));
+        placeNewPiece('e', 1, new KingEntity(board, ColorEnum.WHITHE));
+
+        placeNewPiece('a', 8, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('e', 8, new KingEntity(board, ColorEnum.BLACK));
     }
 }
