@@ -3,7 +3,7 @@ package chess.enums;
 public enum ColorEnum {
 
     BLACK (1, "Black"),
-    WHITHE(2, "White");
+    WHITE(2, "White");
 
     private final Integer id;
 

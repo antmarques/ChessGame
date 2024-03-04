@@ -27,10 +27,18 @@ public class ChessMatchEntity {
     }
 
     private void initialSetup() {
-        placeNewPiece('a', 1, new RookEntity(board, ColorEnum.WHITHE));
-        placeNewPiece('e', 1, new KingEntity(board, ColorEnum.WHITHE));
+        placeNewPiece('c', 1, new RookEntity(board, ColorEnum.WHITE));
+        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.WHITE));
+        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.WHITE));
+        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.WHITE));
+        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.WHITE));
+        placeNewPiece('d', 1, new KingEntity(board, ColorEnum.WHITE));
 
-        placeNewPiece('a', 8, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('e', 8, new KingEntity(board, ColorEnum.BLACK));
+        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.BLACK));
+        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.BLACK));
     }
 }
