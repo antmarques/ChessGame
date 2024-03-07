@@ -1,7 +1,10 @@
 package chess.entities;
 
 import boardgame.entities.BoardEntity;
+import boardgame.entities.PieceEntity;
+import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
+import chess.exceptions.ChessException;
 
 public class ChessMatchEntity {
 
@@ -20,6 +23,27 @@ public class ChessMatchEntity {
             }
         }
         return mat;
+    }
+
+    public ChessPieceEntity performChessMove(ChessPositionEntity sourcePosition, ChessPositionEntity targetPosition){
+        PositionEntity source = sourcePosition.toPosition();
+        PositionEntity target = targetPosition.toPosition();
+        validateSourcePosition(source);
+        PieceEntity capturedPiece = makeMove(source, target);
+        return (ChessPieceEntity) capturedPiece;
+    }
+
+    private void validateSourcePosition(PositionEntity position){
+        if (!board.thereIsAPiece(position)){
+            throw new ChessException("There is no piece on source position");
+        }
+    }
+
+    private PieceEntity makeMove(PositionEntity source, PositionEntity target) {
+        PieceEntity p = board.removePiece(source);
+        PieceEntity capturedPiece = board.removePiece(target);
+        board.placePiece(p, target);
+        return capturedPiece;
     }
 
     protected void placeNewPiece(Character column, Integer row, ChessPieceEntity piece){

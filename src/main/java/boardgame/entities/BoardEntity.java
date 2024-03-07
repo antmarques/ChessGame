@@ -49,6 +49,20 @@ public class BoardEntity {
         piece.position = position;
     }
 
+    public PieceEntity removePiece(PositionEntity position){
+        if (!positionExists(position)){
+            throw new BoardException("Position not on the board");
+        }
+        if (piece(position) != null){
+            PieceEntity pieceAux = piece(position);
+            pieceAux.position = null;
+            pieces[position.getRow()][position.getColumn()] = null;
+            return pieceAux;
+        } else {
+            return null;
+        }
+    }
+
     public Boolean positionExists(Integer row, Integer column){
        return row >= 0 && row < rows && column >= 0 && column < columns;
     }
