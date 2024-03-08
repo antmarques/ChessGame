@@ -13,4 +13,9 @@ public class RookEntity extends ChessPieceEntity{
     public String toString() {
         return "R";
     }
+
+    @Override
+    public Boolean[][] possibleMoves() {
+        return new Boolean[getBoard().getColumns()][getBoard().getColumns()];
+    }
 }

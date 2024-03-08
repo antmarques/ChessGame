@@ -1,6 +1,7 @@
 package chess.entities;
 
 import boardgame.entities.BoardEntity;
+import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 
 public class KingEntity extends ChessPieceEntity{
@@ -11,5 +12,10 @@ public class KingEntity extends ChessPieceEntity{
     @Override
     public String toString() {
         return "K";
+    }
+
+    @Override
+    public Boolean[][] possibleMoves() {
+        return new Boolean[getBoard().getColumns()][getBoard().getColumns()];
     }
 }

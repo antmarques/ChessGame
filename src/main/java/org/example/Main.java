@@ -15,8 +15,9 @@ public class Main {
         ChessMatchEntity chessMatch = new ChessMatchEntity();
         var x = true;
 
-        while (x){
+        while (x == true){
             try {
+                UI.clearScreen();
                 UI.printBoard(chessMatch.getPieces());
 
                 System.out.println();
@@ -29,17 +30,7 @@ public class Main {
 
                 System.out.println();
                 ChessPieceEntity capturedPiece = chessMatch.performChessMove(source, target);
-            }catch (InputMismatchException e){
-                System.out.println(e.getMessage() + "\nDo you want to position again? (y/n)");
-                var choice = sc.next().charAt(0);
-                if (choice == 'n'){
-                    x = false;
-                    sc.close();
-                } else if (choice == 'y'){
-                    x = true;
-                    sc.nextLine();
-                }
-            }catch (ChessException e){
+            }catch (InputMismatchException | ChessException e){
                 System.out.println(e.getMessage() + "\nDo you want to position again? (y/n)");
                 var choice = sc.next().charAt(0);
                 if (choice == 'n'){

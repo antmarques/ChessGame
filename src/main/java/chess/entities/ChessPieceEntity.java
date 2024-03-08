@@ -2,9 +2,10 @@ package chess.entities;
 
 import boardgame.entities.BoardEntity;
 import boardgame.entities.PieceEntity;
+import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 
-public class ChessPieceEntity extends PieceEntity {
+public abstract class ChessPieceEntity extends PieceEntity {
 
     private ColorEnum color;
 
@@ -16,5 +17,4 @@ public class ChessPieceEntity extends PieceEntity {
     public ColorEnum getColor() {
         return color;
     }
-
 }
