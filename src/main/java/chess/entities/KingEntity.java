@@ -15,7 +15,7 @@ public class KingEntity extends ChessPieceEntity{
     }
 
     @Override
-    public Boolean[][] possibleMoves() {
-        return new Boolean[getBoard().getColumns()][getBoard().getColumns()];
+    public boolean[][] possibleMoves() {
+        return new boolean[getBoard().getColumns()][getBoard().getColumns()];
     }
 }

@@ -31,7 +31,8 @@ public class PositionEntity {
     }
 
     public void setValues(Integer row, Integer column){
-
+        this.row = row;
+        this.column = column;
     }
 
     @Override

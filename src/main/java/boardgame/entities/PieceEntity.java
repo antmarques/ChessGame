@@ -14,17 +14,17 @@ public abstract class PieceEntity {
         return board;
     }
 
-    public abstract Boolean[][] possibleMoves();
+    public abstract boolean[][] possibleMoves();
 
     public boolean possibleMove(PositionEntity position){ //Princípio do Padrão TemplateMethod.
         return possibleMoves()[position.getRow()][position.getColumn()];
     }
 
-    public Boolean isThereAnyPossibleMove() {
-        Boolean aux [][] = possibleMoves();
+    public boolean isThereAnyPossibleMove() {
+        boolean aux [][] = possibleMoves();
         for (var i = 0; i < aux.length; i++){
             for (var j = 0; j < aux.length; j++){
-                if (aux[i][j] != null){
+                if (aux[i][j]){
                     return true;
                 }
             }

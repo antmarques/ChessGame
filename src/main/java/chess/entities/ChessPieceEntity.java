@@ -17,4 +17,9 @@ public abstract class ChessPieceEntity extends PieceEntity {
     public ColorEnum getColor() {
         return color;
     }
+
+    protected Boolean isThereOpponentPiece(PositionEntity position) {
+        ChessPieceEntity p = (ChessPieceEntity) getBoard().piece(position);
+        return p != null && p.getColor() != color;
+    }
 }
