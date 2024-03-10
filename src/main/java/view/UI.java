@@ -54,16 +54,30 @@ public class UI {
         for (var i = 0; i < pieces.length; i++){
             System.out.print(8 - i + " ");
             for (var j = 0; j < pieces.length; j++){
-                printPiece(pieces[i][j]);
+                printPiece(pieces[i][j], false);
             }
             System.out.println();
         }
         System.out.println("  a b c d e f g h");
     }
 
-    private static void printPiece(ChessPieceEntity piece){
+    public static void printBoard(ChessPieceEntity[][] pieces, boolean[][] possibleMoves){
+        for (var i = 0; i < pieces.length; i++){
+            System.out.print(8 - i + " ");
+            for (var j = 0; j < pieces.length; j++){
+                printPiece(pieces[i][j], possibleMoves[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println("  a b c d e f g h");
+    }
+
+    private static void printPiece(ChessPieceEntity piece, boolean backGround){
+        if (backGround) {
+            System.out.print(ANSI_RED_BACKGROUND);
+        }
         if (piece == null){
-            System.out.print("-");
+            System.out.print("-" + ANSI_RESET);
         } else {
             if (piece.getColor() == ColorEnum.WHITE){
                 System.out.print(ANSI_BLUE + piece + ANSI_RESET);
