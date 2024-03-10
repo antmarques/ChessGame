@@ -16,6 +16,63 @@ public class KingEntity extends ChessPieceEntity{
 
     @Override
     public boolean[][] possibleMoves() {
-        return new boolean[getBoard().getColumns()][getBoard().getColumns()];
+        boolean mat[][] = new boolean[getBoard().getColumns()][getBoard().getColumns()];
+
+        PositionEntity pe = new PositionEntity(0, 0);
+
+        //above
+        pe.setValues(position.getRow() - 1, position.getColumn());
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //below
+        pe.setValues(position.getRow() + 1, position.getColumn());
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //left
+        pe.setValues(position.getRow(), position.getColumn() - 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //right
+        pe.setValues(position.getRow(), position.getColumn() + 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //nw
+        pe.setValues(position.getRow() - 1, position.getColumn() - 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //ne
+        pe.setValues(position.getRow() - 1, position.getColumn() + 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //sw
+        pe.setValues(position.getRow() + 1, position.getColumn() - 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        //se
+        pe.setValues(position.getRow() + 1, position.getColumn() + 1);
+        if (getBoard().positionExists(pe) && canMove(pe)) {
+            mat[pe.getRow()][pe.getColumn()] = true;
+        }
+
+        return mat;
+    }
+
+    private boolean canMove(PositionEntity position){
+        ChessPieceEntity cpe = (ChessPieceEntity) getBoard().piece(position);
+        return cpe == null || cpe.getColor() != getColor();
     }
 }
