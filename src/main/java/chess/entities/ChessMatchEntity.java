@@ -6,6 +6,9 @@ import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 import chess.exceptions.ChessException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChessMatchEntity {
 
     private BoardEntity board;
@@ -13,6 +16,10 @@ public class ChessMatchEntity {
     private Integer turn;
 
     private ColorEnum player;
+
+    private List<PieceEntity> piecesOnTheBoard = new ArrayList<>();
+
+    private List<PieceEntity> capturedPieces = new ArrayList<>();
 
     public ChessMatchEntity() {
         board = new BoardEntity(8, 8);
@@ -82,11 +89,17 @@ public class ChessMatchEntity {
         PieceEntity p = board.removePiece(source);
         PieceEntity capturedPiece = board.removePiece(target);
         board.placePiece(p, target);
+
+        if (capturedPiece != null) {
+            piecesOnTheBoard.remove(capturedPiece);
+            capturedPieces.add(capturedPiece);
+        }
         return capturedPiece;
     }
 
     protected void placeNewPiece(Character column, Integer row, ChessPieceEntity piece){
         board.placePiece(piece, new ChessPositionEntity(column, row).toPosition());
+        piecesOnTheBoard.add(piece);
     }
 
     private void initialSetup() {

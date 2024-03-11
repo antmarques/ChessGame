@@ -5,8 +5,11 @@ import chess.entities.ChessPieceEntity;
 import chess.entities.ChessPositionEntity;
 import chess.enums.ColorEnum;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class UI {
 
@@ -51,8 +54,10 @@ public class UI {
         }
     }
 
-    public static void printMatch(ChessMatchEntity chessMatch){
+    public static void printMatch(ChessMatchEntity chessMatch, List<ChessPieceEntity> listCaptureds){
         printBoard(chessMatch.getPieces());
+        System.out.println();
+        printCapturedPieces(listCaptureds);
         System.out.println();
         System.out.println("Turn : " + chessMatch.getTurn());
         System.out.println("Waiting player: " + chessMatch.getPlayer().getDesc());
@@ -94,5 +99,20 @@ public class UI {
             }
         }
         System.out.print(" ");
+    }
+
+    private static void printCapturedPieces(List<ChessPieceEntity> list) {
+        List<ChessPieceEntity> listYellow =list.stream().filter(x -> x.getColor() == ColorEnum.YELLOW).collect(Collectors.toList());
+        List<ChessPieceEntity> listBlue =
+                list.stream().filter(x -> x.getColor() == ColorEnum.BLUE).collect(Collectors.toList());
+        System.out.println("Captured pieces: ");
+        System.out.print(ColorEnum.YELLOW.getDesc() + ": ");
+        System.out.print(ANSI_BLUE);
+        System.out.println(Arrays.toString(listYellow.toArray()));
+        System.out.print(ANSI_RESET);
+        System.out.print(ColorEnum.BLUE.getDesc() + ": ");
+        System.out.print(ANSI_YELLOW);
+        System.out.println(Arrays.toString(listBlue.toArray()));
+        System.out.print(ANSI_RESET);
     }
 }
