@@ -1,5 +1,6 @@
 package view;
 
+import chess.entities.ChessMatchEntity;
 import chess.entities.ChessPieceEntity;
 import chess.entities.ChessPositionEntity;
 import chess.enums.ColorEnum;
@@ -50,6 +51,13 @@ public class UI {
         }
     }
 
+    public static void printMatch(ChessMatchEntity chessMatch){
+        printBoard(chessMatch.getPieces());
+        System.out.println();
+        System.out.println("Turn : " + chessMatch.getTurn());
+        System.out.println("Waiting player: " + chessMatch.getPlayer().getDesc());
+    }
+
     public static void printBoard(ChessPieceEntity[][] pieces){
         for (var i = 0; i < pieces.length; i++){
             System.out.print(8 - i + " ");
@@ -79,7 +87,7 @@ public class UI {
         if (piece == null){
             System.out.print("-" + ANSI_RESET);
         } else {
-            if (piece.getColor() == ColorEnum.WHITE){
+            if (piece.getColor() == ColorEnum.YELLOW){
                 System.out.print(ANSI_BLUE + piece + ANSI_RESET);
             } else {
                 System.out.print(ANSI_YELLOW + piece + ANSI_RESET);

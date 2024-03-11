@@ -2,8 +2,8 @@ package chess.enums;
 
 public enum ColorEnum {
 
-    BLACK (1, "Black"),
-    WHITE(2, "White");
+    YELLOW(1, "Yellow"),
+    BLUE(2, "Blue");
 
     private final Integer id;
 

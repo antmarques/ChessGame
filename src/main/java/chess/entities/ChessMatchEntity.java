@@ -10,9 +10,23 @@ public class ChessMatchEntity {
 
     private BoardEntity board;
 
+    private Integer turn;
+
+    private ColorEnum player;
+
     public ChessMatchEntity() {
         board = new BoardEntity(8, 8);
+        turn = 1;
+        player = ColorEnum.BLUE;
         initialSetup();
+    }
+
+    public Integer getTurn() {
+        return turn;
+    }
+
+    public ColorEnum getPlayer() {
+        return player;
     }
 
     public ChessPieceEntity[][] getPieces() {
@@ -37,12 +51,16 @@ public class ChessMatchEntity {
         validateSourcePosition(source);
         validadteTargetPosition(source, target);
         PieceEntity capturedPiece = makeMove(source, target);
+        nextTurn();
         return (ChessPieceEntity) capturedPiece;
     }
 
     private void validateSourcePosition(PositionEntity position){
         if (!board.thereIsAPiece(position)){
             throw new ChessException("There is no piece on source position");
+        }
+        if (player == ((ChessPieceEntity)board.piece(position)).getColor()) {
+            throw new ChessException("The chosen piece is not yours");
         }
         if (!board.piece(position).isThereAnyPossibleMove()){
             throw new ChessException("There is no possible moves for the chosen piece");
@@ -53,6 +71,11 @@ public class ChessMatchEntity {
         if (!board.piece(source).possibleMove(target)){
             throw new ChessException("The chosen piece can't move to target position");
         }
+    }
+
+    private void nextTurn() {
+        turn++;
+        player = (player == ColorEnum.BLUE) ? ColorEnum.YELLOW: ColorEnum.BLUE;
     }
 
     private PieceEntity makeMove(PositionEntity source, PositionEntity target) {
@@ -67,18 +90,18 @@ public class ChessMatchEntity {
     }
 
     private void initialSetup() {
-        placeNewPiece('c', 1, new RookEntity(board, ColorEnum.WHITE));
-        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.WHITE));
-        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.WHITE));
-        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.WHITE));
-        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.WHITE));
-        placeNewPiece('d', 1, new KingEntity(board, ColorEnum.WHITE));
+        placeNewPiece('c', 1, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('d', 1, new KingEntity(board, ColorEnum.YELLOW));
 
-        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.BLACK));
-        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.BLACK));
+        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.BLUE));
     }
 }
