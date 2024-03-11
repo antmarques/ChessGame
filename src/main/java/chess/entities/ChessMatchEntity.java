@@ -8,6 +8,7 @@ import chess.exceptions.ChessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChessMatchEntity {
 
@@ -17,6 +18,8 @@ public class ChessMatchEntity {
 
     private ColorEnum player;
 
+    private Boolean check;
+
     private List<PieceEntity> piecesOnTheBoard = new ArrayList<>();
 
     private List<PieceEntity> capturedPieces = new ArrayList<>();
@@ -25,7 +28,12 @@ public class ChessMatchEntity {
         board = new BoardEntity(8, 8);
         turn = 1;
         player = ColorEnum.BLUE;
+        check = false;
         initialSetup();
+    }
+
+    public Boolean getCheck() {
+        return check;
     }
 
     public Integer getTurn() {
@@ -58,6 +66,14 @@ public class ChessMatchEntity {
         validateSourcePosition(source);
         validadteTargetPosition(source, target);
         PieceEntity capturedPiece = makeMove(source, target);
+
+        if (testCheck(player)) {
+            undoMove(source, target, capturedPiece);
+            throw new ChessException("You can't put yourself in check");
+        }
+
+        check = (testCheck(opponet(player))) ? true: false;
+
         nextTurn();
         return (ChessPieceEntity) capturedPiece;
     }
@@ -66,7 +82,7 @@ public class ChessMatchEntity {
         if (!board.thereIsAPiece(position)){
             throw new ChessException("There is no piece on source position");
         }
-        if (player == ((ChessPieceEntity)board.piece(position)).getColor()) {
+        if (player != ((ChessPieceEntity)board.piece(position)).getColor()) {
             throw new ChessException("The chosen piece is not yours");
         }
         if (!board.piece(position).isThereAnyPossibleMove()){
@@ -97,24 +113,61 @@ public class ChessMatchEntity {
         return capturedPiece;
     }
 
+    private void undoMove(PositionEntity source, PositionEntity target, PieceEntity capturedPiece) {
+        PieceEntity pe = board.removePiece(target);
+        board.placePiece(pe, source);
+
+        if (capturedPiece != null) {
+            board.placePiece(capturedPiece, target);
+            capturedPieces.remove(capturedPiece);
+            piecesOnTheBoard.add(capturedPiece);
+        }
+    }
+
+    private ColorEnum opponet(ColorEnum color) {
+        return (color == ColorEnum.BLUE) ? ColorEnum.YELLOW: ColorEnum.BLUE;
+    }
+
+    private ChessPieceEntity king(ColorEnum color) {
+        List<PieceEntity> list = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).collect(Collectors.toList());
+        for (PieceEntity pe: list){
+            if (pe instanceof KingEntity){
+                return (ChessPieceEntity) pe;
+            }
+        }
+        throw new IllegalStateException("There is no " + color + " king on the board");
+    }
+
+    private boolean testCheck(ColorEnum color) {
+        PositionEntity kingPosition = king(color).getChessPosition().toPosition();
+        List<PieceEntity> opponetPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == opponet(color)).collect(Collectors.toList());
+        for (PieceEntity pe: opponetPieces) {
+            boolean[][] mat = pe.possibleMoves();
+            if (mat[kingPosition.getRow()][kingPosition.getColumn()]){
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void placeNewPiece(Character column, Integer row, ChessPieceEntity piece){
         board.placePiece(piece, new ChessPositionEntity(column, row).toPosition());
         piecesOnTheBoard.add(piece);
     }
 
     private void initialSetup() {
-        placeNewPiece('c', 1, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 1, new KingEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('c', 1, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('d', 1, new KingEntity(board, ColorEnum.BLUE));
 
-        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.BLUE));
+        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.YELLOW));
     }
 }

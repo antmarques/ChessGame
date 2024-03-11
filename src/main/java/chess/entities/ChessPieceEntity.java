@@ -22,4 +22,8 @@ public abstract class ChessPieceEntity extends PieceEntity {
         ChessPieceEntity p = (ChessPieceEntity) getBoard().piece(position);
         return p != null && p.getColor() != color;
     }
+
+    public ChessPositionEntity getChessPosition() {
+        return ChessPositionEntity.fromPosition(position);
+    }
 }
