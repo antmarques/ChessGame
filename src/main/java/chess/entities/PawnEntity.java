@@ -4,9 +4,9 @@ import boardgame.entities.BoardEntity;
 import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 
-public class Pawn extends ChessPieceEntity{
+public class PawnEntity extends ChessPieceEntity{
 
-    public Pawn(BoardEntity board, ColorEnum color) {
+    public PawnEntity(BoardEntity board, ColorEnum color) {
         super(board, color);
     }
 

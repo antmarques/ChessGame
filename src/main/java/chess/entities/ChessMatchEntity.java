@@ -199,35 +199,37 @@ public class ChessMatchEntity {
         //Team Blue
         placeNewPiece('h', 1, new KingEntity(board, ColorEnum.BLUE));
         //rainha
-        placeNewPiece('c', 1, new Bishop(board, ColorEnum.BLUE));
-        placeNewPiece('f', 1, new Bishop(board, ColorEnum.BLUE));
-        //cavalo
+        placeNewPiece('c', 1, new BishopEntity(board, ColorEnum.BLUE));
+        placeNewPiece('f', 1, new BishopEntity(board, ColorEnum.BLUE));
+        placeNewPiece('b', 1, new KnightEntity(board, ColorEnum.BLUE));
+        placeNewPiece('g', 1, new KnightEntity(board, ColorEnum.BLUE));
         placeNewPiece('a', 1, new RookEntity(board, ColorEnum.BLUE));
         placeNewPiece('e', 1, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('a', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('b', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('c', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('d', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('e', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('f', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('g', 2, new Pawn(board, ColorEnum.BLUE));
-        placeNewPiece('h', 2, new Pawn(board, ColorEnum.BLUE));
+        placeNewPiece('a', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('b', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('c', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('d', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('f', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('g', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('h', 2, new PawnEntity(board, ColorEnum.BLUE));
 
         //Team Yellow
         placeNewPiece('e', 8, new KingEntity(board, ColorEnum.YELLOW));
         //rainha
-        placeNewPiece('c', 8, new Bishop(board, ColorEnum.YELLOW));
-        placeNewPiece('f', 8, new Bishop(board, ColorEnum.YELLOW));
-        //cavalo
+        placeNewPiece('c', 8, new BishopEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('f', 8, new BishopEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('b', 8, new KnightEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('g', 8, new KnightEntity(board, ColorEnum.YELLOW));
         placeNewPiece('a', 8, new RookEntity(board, ColorEnum.YELLOW));
         placeNewPiece('h', 8, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('a', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('b', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('c', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('f', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('g', 7, new Pawn(board, ColorEnum.YELLOW));
-        placeNewPiece('h', 7, new Pawn(board, ColorEnum.YELLOW));
+        placeNewPiece('a', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('b', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('c', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('d', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('f', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('g', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('h', 7, new PawnEntity(board, ColorEnum.YELLOW));
     }
 }
