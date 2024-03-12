@@ -16,9 +16,8 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         ChessMatchEntity chessMatch = new ChessMatchEntity();
         List<ChessPieceEntity> listCaptureds = new ArrayList<>();
-        var x = true;
 
-        while (x == true){
+        while (!chessMatch.getCheckMate()){
             try {
                 UI.clearScreen();
                 UI.printMatch(chessMatch, listCaptureds);
@@ -40,17 +39,11 @@ public class Main {
                 if (capturedPiece != null){
                     listCaptureds.add(capturedPiece);
                 }
-            }catch (InputMismatchException | ChessException e){
-                System.out.println(e.getMessage() + "\nDo you want to try again? (y/n)");
-                var choice = sc.next().charAt(0);
-                if (choice == 'n'){
-                    x = false;
-                    sc.close();
-                } else if (choice == 'y'){
-                    x = true;
-                    sc.nextLine();
-                }
+            } catch (InputMismatchException | ChessException e){
+                System.out.println(e.getMessage());
             }
         }
+        UI.printMatch(chessMatch, listCaptureds);
+        sc.close();
     }
 }

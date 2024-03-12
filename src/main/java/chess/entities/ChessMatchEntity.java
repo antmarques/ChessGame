@@ -20,6 +20,8 @@ public class ChessMatchEntity {
 
     private Boolean check;
 
+    private Boolean checkMate;
+
     private List<PieceEntity> piecesOnTheBoard = new ArrayList<>();
 
     private List<PieceEntity> capturedPieces = new ArrayList<>();
@@ -29,11 +31,8 @@ public class ChessMatchEntity {
         turn = 1;
         player = ColorEnum.BLUE;
         check = false;
+        checkMate = false;
         initialSetup();
-    }
-
-    public Boolean getCheck() {
-        return check;
     }
 
     public Integer getTurn() {
@@ -42,6 +41,14 @@ public class ChessMatchEntity {
 
     public ColorEnum getPlayer() {
         return player;
+    }
+
+    public Boolean getCheck() {
+        return check;
+    }
+
+    public boolean getCheckMate() {
+        return checkMate;
     }
 
     public ChessPieceEntity[][] getPieces() {
@@ -74,7 +81,12 @@ public class ChessMatchEntity {
 
         check = (testCheck(opponet(player))) ? true: false;
 
-        nextTurn();
+        if (testCheckMate(opponet(player))) {
+            checkMate = true;
+        } else {
+            nextTurn();
+        }
+
         return (ChessPieceEntity) capturedPiece;
     }
 
@@ -150,24 +162,44 @@ public class ChessMatchEntity {
         return false;
     }
 
+    private boolean testCheckMate(ColorEnum color) {
+        if (!testCheck(color)){
+            return false;
+        }
+        List<PieceEntity> allPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).collect(Collectors.toList());
+        for (PieceEntity pe: allPieces){
+            boolean [][] mat = pe.possibleMoves();
+            for (int i = 0; i< board.getRows(); i++){
+                for (int j = 0; j < board.getColumns(); j++){
+                    if (mat[i][j]) {
+                        PositionEntity source = ((ChessPieceEntity)pe).getChessPosition().toPosition();
+                        PositionEntity target = new PositionEntity(i, j);
+                        PieceEntity capturedPiece = makeMove(source, target);
+                        boolean testCheck = testCheck(color);
+                        undoMove(source, target, capturedPiece);
+                        if (!testCheck){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     protected void placeNewPiece(Character column, Integer row, ChessPieceEntity piece){
         board.placePiece(piece, new ChessPositionEntity(column, row).toPosition());
         piecesOnTheBoard.add(piece);
     }
 
     private void initialSetup() {
+        //Team Blue
         placeNewPiece('c', 1, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('c', 2, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('d', 2, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 2, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('h', 7, new RookEntity(board, ColorEnum.BLUE));
         placeNewPiece('d', 1, new KingEntity(board, ColorEnum.BLUE));
 
-        placeNewPiece('c', 7, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('c', 8, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 7, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 7, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 8, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 8, new KingEntity(board, ColorEnum.YELLOW));
+        //Team Yellow
+        placeNewPiece('b', 8, new RookEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('a', 8, new KingEntity(board, ColorEnum.YELLOW));
     }
 }
