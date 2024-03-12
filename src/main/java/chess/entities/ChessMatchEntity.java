@@ -198,7 +198,7 @@ public class ChessMatchEntity {
     private void initialSetup() {
         //Team Blue
         placeNewPiece('h', 1, new KingEntity(board, ColorEnum.BLUE));
-        //rainha
+        placeNewPiece('d', 1, new QueenEntity(board, ColorEnum.BLUE));
         placeNewPiece('c', 1, new BishopEntity(board, ColorEnum.BLUE));
         placeNewPiece('f', 1, new BishopEntity(board, ColorEnum.BLUE));
         placeNewPiece('b', 1, new KnightEntity(board, ColorEnum.BLUE));
@@ -216,7 +216,7 @@ public class ChessMatchEntity {
 
         //Team Yellow
         placeNewPiece('e', 8, new KingEntity(board, ColorEnum.YELLOW));
-        //rainha
+        placeNewPiece('d', 8, new QueenEntity(board, ColorEnum.YELLOW));
         placeNewPiece('c', 8, new BishopEntity(board, ColorEnum.YELLOW));
         placeNewPiece('f', 8, new BishopEntity(board, ColorEnum.YELLOW));
         placeNewPiece('b', 8, new KnightEntity(board, ColorEnum.YELLOW));
