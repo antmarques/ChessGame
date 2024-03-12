@@ -197,9 +197,13 @@ public class ChessMatchEntity {
 
     private void initialSetup() {
         //Team Blue
+        placeNewPiece('h', 1, new KingEntity(board, ColorEnum.BLUE));
+        //rainha
+        placeNewPiece('c', 1, new Bishop(board, ColorEnum.BLUE));
+        placeNewPiece('f', 1, new Bishop(board, ColorEnum.BLUE));
+        //cavalo
         placeNewPiece('a', 1, new RookEntity(board, ColorEnum.BLUE));
         placeNewPiece('e', 1, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('h', 1, new KingEntity(board, ColorEnum.BLUE));
         placeNewPiece('a', 2, new Pawn(board, ColorEnum.BLUE));
         placeNewPiece('b', 2, new Pawn(board, ColorEnum.BLUE));
         placeNewPiece('c', 2, new Pawn(board, ColorEnum.BLUE));
@@ -210,8 +214,12 @@ public class ChessMatchEntity {
         placeNewPiece('h', 2, new Pawn(board, ColorEnum.BLUE));
 
         //Team Yellow
-        placeNewPiece('a', 8, new RookEntity(board, ColorEnum.YELLOW));
         placeNewPiece('e', 8, new KingEntity(board, ColorEnum.YELLOW));
+        //rainha
+        placeNewPiece('c', 8, new Bishop(board, ColorEnum.YELLOW));
+        placeNewPiece('f', 8, new Bishop(board, ColorEnum.YELLOW));
+        //cavalo
+        placeNewPiece('a', 8, new RookEntity(board, ColorEnum.YELLOW));
         placeNewPiece('h', 8, new RookEntity(board, ColorEnum.YELLOW));
         placeNewPiece('a', 7, new Pawn(board, ColorEnum.YELLOW));
         placeNewPiece('b', 7, new Pawn(board, ColorEnum.YELLOW));
