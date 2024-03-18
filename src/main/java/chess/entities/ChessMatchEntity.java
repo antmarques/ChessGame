@@ -6,7 +6,6 @@ import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 import chess.exceptions.ChessException;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -126,7 +125,7 @@ public class ChessMatchEntity {
             throw new IllegalStateException("There is no piece to be promoted");
         }
         if (!s.equals("B") && !s.equals("N") && !s.equals("R") && !s.equals("Q")) {
-            throw new InvalidParameterException("Invalid type for promotion");
+            return promoted;
         }
 
         PositionEntity pe = promoted.getChessPosition().toPosition();

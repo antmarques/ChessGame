@@ -42,7 +42,11 @@ public class Main {
 
                 if (chessMatch.getPromoted() != null) {
                     System.out.print("Enter piece for promotion (B/N/R/Q): ");
-                    var s = sc.nextLine();
+                    var s = sc.nextLine().toUpperCase();
+                    while(!s.equals("B") && !s.equals("N") && !s.equals("R") && !s.equals("Q")) {
+                        System.out.print("Invalid value, Enter again with piece for promotion (B/N/R/Q): ");
+                        s = sc.nextLine().toUpperCase();
+                    }
                     chessMatch.replacePromotedPiece(s);
                 }
             } catch (InputMismatchException | ChessException e){
