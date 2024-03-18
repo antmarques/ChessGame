@@ -39,6 +39,12 @@ public class Main {
                 if (capturedPiece != null){
                     listCaptureds.add(capturedPiece);
                 }
+
+                if (chessMatch.getPromoted() != null) {
+                    System.out.print("Enter piece for promotion (B/N/R/Q): ");
+                    var s = sc.nextLine();
+                    chessMatch.replacePromotedPiece(s);
+                }
             } catch (InputMismatchException | ChessException e){
                 System.out.println(e.getMessage());
             }

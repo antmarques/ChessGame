@@ -63,15 +63,15 @@ public class BoardEntity {
         }
     }
 
-    public Boolean positionExists(Integer row, Integer column){
+    public boolean positionExists(Integer row, Integer column){
        return row >= 0 && row < rows && column >= 0 && column < columns;
     }
 
-    public Boolean positionExists(PositionEntity position){
+    public boolean positionExists(PositionEntity position){
         return positionExists(position.getRow(), position.getColumn());
     }
 
-    public Boolean thereIsAPiece(PositionEntity position){
+    public boolean thereIsAPiece(PositionEntity position){
         if (!positionExists(position)){
             throw new BoardException("Position not on the board");
         }

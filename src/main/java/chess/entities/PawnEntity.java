@@ -6,8 +6,11 @@ import chess.enums.ColorEnum;
 
 public class PawnEntity extends ChessPieceEntity{
 
-    public PawnEntity(BoardEntity board, ColorEnum color) {
+    private ChessMatchEntity chessMatch;
+
+    public PawnEntity(BoardEntity board, ColorEnum color, ChessMatchEntity chessMatch) {
         super(board, color);
+        this.chessMatch = chessMatch;
     }
 
     @Override
@@ -33,6 +36,17 @@ public class PawnEntity extends ChessPieceEntity{
             if (getBoard().positionExists(p) && isThereOpponentPiece(p)){
                 mat[p.getRow()][p.getColumn()] = true;
             }
+            // #specialmove en passant blue
+            if (position.getRow() == 3) {
+                PositionEntity pLeft = new PositionEntity(position.getRow(), position.getColumn() - 1);
+                if (getBoard().positionExists(pLeft) && isThereOpponentPiece(pLeft) && getBoard().piece(pLeft) == chessMatch.getEnPassantVulnerable()) {
+                    mat[pLeft.getRow() - 1][pLeft.getColumn()] = true;
+                }
+                PositionEntity pRight = new PositionEntity(position.getRow(), position.getColumn() + 1);
+                if (getBoard().positionExists(pRight) && isThereOpponentPiece(pRight) && getBoard().piece(pRight) == chessMatch.getEnPassantVulnerable()) {
+                    mat[pRight.getRow() - 1][pRight.getColumn()] = true;
+                }
+            }
         } else {
             p.setValues(position.getRow() + 1, position.getColumn());
             if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)){
@@ -46,6 +60,18 @@ public class PawnEntity extends ChessPieceEntity{
             p.setValues(position.getRow() + 1, position.getColumn() - 1);
             if (getBoard().positionExists(p) && isThereOpponentPiece(p)){
                 mat[p.getRow()][p.getColumn()] = true;
+            }
+
+            // #specialmove en passant yellow
+            if (position.getRow() == 4) {
+                PositionEntity pLeft = new PositionEntity(position.getRow(), position.getColumn() - 1);
+                if (getBoard().positionExists(pLeft) && isThereOpponentPiece(pLeft) && getBoard().piece(pLeft) == chessMatch.getEnPassantVulnerable()) {
+                    mat[pLeft.getRow() + 1][pLeft.getColumn()] = true;
+                }
+                PositionEntity pRight = new PositionEntity(position.getRow(), position.getColumn() + 1);
+                if (getBoard().positionExists(pRight) && isThereOpponentPiece(pRight) && getBoard().piece(pRight) == chessMatch.getEnPassantVulnerable()) {
+                    mat[pRight.getRow() + 1][pRight.getColumn()] = true;
+                }
             }
         }
 

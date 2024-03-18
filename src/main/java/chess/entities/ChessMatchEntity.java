@@ -6,9 +6,10 @@ import boardgame.entities.PositionEntity;
 import chess.enums.ColorEnum;
 import chess.exceptions.ChessException;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class ChessMatchEntity {
 
@@ -21,6 +22,10 @@ public class ChessMatchEntity {
     private Boolean check;
 
     private Boolean checkMate;
+
+    private ChessPieceEntity enPassantVulnerable;
+
+    private ChessPieceEntity promoted;
 
     private List<PieceEntity> piecesOnTheBoard = new ArrayList<>();
 
@@ -45,6 +50,14 @@ public class ChessMatchEntity {
 
     public Boolean getCheck() {
         return check;
+    }
+
+    public ChessPieceEntity getEnPassantVulnerable() {
+        return enPassantVulnerable;
+    }
+
+    public ChessPieceEntity getPromoted() {
+        return promoted;
     }
 
     public boolean getCheckMate() {
@@ -79,6 +92,17 @@ public class ChessMatchEntity {
             throw new ChessException("You can't put yourself in check");
         }
 
+        ChessPieceEntity movedPiece = (ChessPieceEntity)board.piece(target);
+
+        // #specialmove promotion
+
+        promoted = null;
+        if (movedPiece instanceof PawnEntity) {
+            if ((movedPiece.getColor() == ColorEnum.BLUE && target.getRow() == 0) || (movedPiece.getColor() == ColorEnum.YELLOW && target.getRow() == 7)) {
+                promoted = (ChessPieceEntity)board.piece(target);
+                promoted = replacePromotedPiece("Q");
+            }
+        }
         check = (testCheck(opponet(player))) ? true: false;
 
         if (testCheckMate(opponet(player))) {
@@ -87,7 +111,47 @@ public class ChessMatchEntity {
             nextTurn();
         }
 
+        // #specialmove en passant
+        if (movedPiece instanceof PawnEntity && (target.getRow() == source.getRow() - 2 || target.getRow() == source.getRow() + 2)) {
+            enPassantVulnerable = movedPiece;
+        } else {
+            enPassantVulnerable = null;
+        }
+
         return (ChessPieceEntity) capturedPiece;
+    }
+
+    public ChessPieceEntity replacePromotedPiece(String s) {
+        if (promoted == null) {
+            throw new IllegalStateException("There is no piece to be promoted");
+        }
+        if (!s.equals("B") && !s.equals("N") && !s.equals("R") && !s.equals("Q")) {
+            throw new InvalidParameterException("Invalid type for promotion");
+        }
+
+        PositionEntity pe = promoted.getChessPosition().toPosition();
+        PieceEntity p = board.removePiece(pe);
+        piecesOnTheBoard.remove(p);
+
+        ChessPieceEntity newPiece = newPiece(s, promoted.getColor());
+        board.placePiece(newPiece, pe);
+        piecesOnTheBoard.add(newPiece);
+
+        return newPiece;
+    }
+
+    private ChessPieceEntity newPiece(String s, ColorEnum color) {
+        if (s.equals("B")) {
+            return new BishopEntity(board, color);
+        }
+        if (s.equals("N")) {
+            return new KnightEntity(board, color);
+        }
+        if (s.equals("R")) {
+            return new RookEntity(board, color);
+        }
+
+        return new QueenEntity(board, color);
     }
 
     private void validateSourcePosition(PositionEntity position){
@@ -124,6 +188,39 @@ public class ChessMatchEntity {
             capturedPieces.add(capturedPiece);
         }
 
+        //#specialmove castiling kingside rook
+        if (p instanceof KingEntity && target.getColumn() == source.getColumn() + 2){
+            PositionEntity sourceT = new PositionEntity(source.getRow(), source.getColumn() + 3);
+            PositionEntity targetT = new PositionEntity(source.getRow(), source.getColumn() + 1);
+            ChessPieceEntity rook = (ChessPieceEntity)board.removePiece(sourceT);
+            board.placePiece(rook, targetT);
+            rook.increaseMoveCount();
+        }
+
+        //#specialmove castiling queenside rook
+        if (p instanceof KingEntity && target.getColumn() == source.getColumn() - 2){
+            PositionEntity sourceT = new PositionEntity(source.getRow(), source.getColumn() - 4);
+            PositionEntity targetT = new PositionEntity(source.getRow(), source.getColumn() - 1);
+            ChessPieceEntity rook = (ChessPieceEntity)board.removePiece(sourceT);
+            board.placePiece(rook, targetT);
+            rook.increaseMoveCount();
+        }
+
+        // #specialmove en passant
+        if (p instanceof PawnEntity) {
+            if (source.getColumn() != target.getColumn() && capturedPiece == null){
+                PositionEntity pawnPosition;
+                if (p.getColor() == ColorEnum.BLUE) {
+                    pawnPosition = new PositionEntity(target.getRow() + 1, target.getColumn());
+                } else {
+                    pawnPosition = new PositionEntity(target.getRow() - 1, target.getColumn());
+                }
+                capturedPiece = board.removePiece(pawnPosition);
+                piecesOnTheBoard.remove(capturedPiece);
+                capturedPieces.add(capturedPiece);
+            }
+        }
+
         return capturedPiece;
     }
 
@@ -137,6 +234,38 @@ public class ChessMatchEntity {
             capturedPieces.remove(capturedPiece);
             piecesOnTheBoard.add(capturedPiece);
         }
+
+        //#specialmove castiling kingside rook
+        if (pe instanceof KingEntity && target.getColumn() == source.getColumn() + 2){
+            PositionEntity sourceT = new PositionEntity(source.getRow(), source.getColumn() + 3);
+            PositionEntity targetT = new PositionEntity(source.getRow(), source.getColumn() + 1);
+            ChessPieceEntity rook = (ChessPieceEntity)board.removePiece(targetT);
+            board.placePiece(rook, sourceT);
+            rook.decreaseMoveCount();
+        }
+
+        //#specialmove castiling queenside rook
+        if (pe instanceof KingEntity && target.getColumn() == source.getColumn() - 2){
+            PositionEntity sourceT = new PositionEntity(source.getRow(), source.getColumn() - 4);
+            PositionEntity targetT = new PositionEntity(source.getRow(), source.getColumn() - 1);
+            ChessPieceEntity rook = (ChessPieceEntity)board.removePiece(targetT);
+            board.placePiece(rook, sourceT);
+            rook.decreaseMoveCount();
+        }
+
+        // #specialmove en passant
+        if (pe instanceof PawnEntity) {
+            if (!Objects.equals(source.getColumn(), target.getColumn()) && capturedPiece == enPassantVulnerable){
+                ChessPieceEntity pawn = (ChessPieceEntity)board.removePiece(target);
+                PositionEntity pawnPosition;
+                if (pe.getColor() == ColorEnum.BLUE) {
+                    pawnPosition = new PositionEntity(3, target.getColumn());
+                } else {
+                    pawnPosition = new PositionEntity(4, target.getColumn());
+                }
+                board.placePiece(pawn, pawnPosition);
+            }
+        }
     }
 
     private ColorEnum opponet(ColorEnum color) {
@@ -144,7 +273,7 @@ public class ChessMatchEntity {
     }
 
     private ChessPieceEntity king(ColorEnum color) {
-        List<PieceEntity> list = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).collect(Collectors.toList());
+        List<PieceEntity> list = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).toList();
         for (PieceEntity pe: list){
             if (pe instanceof KingEntity){
                 return (ChessPieceEntity) pe;
@@ -155,7 +284,7 @@ public class ChessMatchEntity {
 
     private boolean testCheck(ColorEnum color) {
         PositionEntity kingPosition = king(color).getChessPosition().toPosition();
-        List<PieceEntity> opponetPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == opponet(color)).collect(Collectors.toList());
+        List<PieceEntity> opponetPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == opponet(color)).toList();
         for (PieceEntity pe: opponetPieces) {
             boolean[][] mat = pe.possibleMoves();
             if (mat[kingPosition.getRow()][kingPosition.getColumn()]){
@@ -169,7 +298,7 @@ public class ChessMatchEntity {
         if (!testCheck(color)){
             return false;
         }
-        List<PieceEntity> allPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).collect(Collectors.toList());
+        List<PieceEntity> allPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPieceEntity)x).getColor() == color).toList();
         for (PieceEntity pe: allPieces){
             boolean [][] mat = pe.possibleMoves();
             for (int i = 0; i< board.getRows(); i++){
@@ -195,27 +324,29 @@ public class ChessMatchEntity {
         piecesOnTheBoard.add(piece);
     }
 
+
+
     private void initialSetup() {
         //Team Blue
-        placeNewPiece('h', 1, new KingEntity(board, ColorEnum.BLUE));
+        placeNewPiece('e', 1, new KingEntity(board, ColorEnum.BLUE, this));
         placeNewPiece('d', 1, new QueenEntity(board, ColorEnum.BLUE));
         placeNewPiece('c', 1, new BishopEntity(board, ColorEnum.BLUE));
         placeNewPiece('f', 1, new BishopEntity(board, ColorEnum.BLUE));
         placeNewPiece('b', 1, new KnightEntity(board, ColorEnum.BLUE));
         placeNewPiece('g', 1, new KnightEntity(board, ColorEnum.BLUE));
         placeNewPiece('a', 1, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 1, new RookEntity(board, ColorEnum.BLUE));
-        placeNewPiece('a', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('b', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('c', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('d', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('e', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('f', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('g', 2, new PawnEntity(board, ColorEnum.BLUE));
-        placeNewPiece('h', 2, new PawnEntity(board, ColorEnum.BLUE));
+        placeNewPiece('h', 1, new RookEntity(board, ColorEnum.BLUE));
+        placeNewPiece('a', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('b', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('c', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('d', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('e', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('f', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('g', 2, new PawnEntity(board, ColorEnum.BLUE, this));
+        placeNewPiece('h', 2, new PawnEntity(board, ColorEnum.BLUE, this));
 
         //Team Yellow
-        placeNewPiece('e', 8, new KingEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('e', 8, new KingEntity(board, ColorEnum.YELLOW, this));
         placeNewPiece('d', 8, new QueenEntity(board, ColorEnum.YELLOW));
         placeNewPiece('c', 8, new BishopEntity(board, ColorEnum.YELLOW));
         placeNewPiece('f', 8, new BishopEntity(board, ColorEnum.YELLOW));
@@ -223,13 +354,13 @@ public class ChessMatchEntity {
         placeNewPiece('g', 8, new KnightEntity(board, ColorEnum.YELLOW));
         placeNewPiece('a', 8, new RookEntity(board, ColorEnum.YELLOW));
         placeNewPiece('h', 8, new RookEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('a', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('b', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('c', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('d', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('e', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('f', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('g', 7, new PawnEntity(board, ColorEnum.YELLOW));
-        placeNewPiece('h', 7, new PawnEntity(board, ColorEnum.YELLOW));
+        placeNewPiece('a', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('b', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('c', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('d', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('e', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('f', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('g', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
+        placeNewPiece('h', 7, new PawnEntity(board, ColorEnum.YELLOW, this));
     }
 }
