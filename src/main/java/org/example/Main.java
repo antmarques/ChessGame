@@ -16,11 +16,12 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         ChessMatchEntity chessMatch = new ChessMatchEntity();
         List<ChessPieceEntity> listCaptureds = new ArrayList<>();
+        var quit = false;
 
-        while (!chessMatch.getCheckMate()){
+        while (!chessMatch.getCheckMate() || !quit){
             try {
                 UI.clearScreen();
-                UI.printMatch(chessMatch, listCaptureds);
+                UI.printMatch(chessMatch, listCaptureds, quit);
 
                 System.out.println();
                 System.out.print("Source: ");
@@ -50,10 +51,22 @@ public class Main {
                     chessMatch.replacePromotedPiece(s);
                 }
             } catch (InputMismatchException | ChessException e){
-                System.out.println(e.getMessage());
+                System.out.print(e.getMessage() + "\nDo you want to play again (y/n)? ");
+                var choice = sc.nextLine().toLowerCase();
+                while (!choice.equals("n") && !choice.equals("y")){
+                    System.out.print("Invalid value, inform 'y' (for yes) or 'n' (for no) ");
+                    choice = sc.nextLine().toLowerCase();
+                }
+                if (choice.equals("n")) {
+                    quit = true;
+                    break;
+                } else {
+                    System.out.print("Press enter! ");
+                    sc.nextLine();
+                }
             }
         }
-        UI.printMatch(chessMatch, listCaptureds);
+        UI.printMatch(chessMatch, listCaptureds, quit);
         sc.close();
     }
 }

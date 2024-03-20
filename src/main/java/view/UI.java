@@ -53,13 +53,23 @@ public class UI {
         }
     }
 
-    public static void printMatch(ChessMatchEntity chessMatch, List<ChessPieceEntity> listCaptureds){
+    public static void printMatch(ChessMatchEntity chessMatch, List<ChessPieceEntity> listCaptureds, boolean quit){
         printBoard(chessMatch.getPieces());
         System.out.println();
         printCapturedPieces(listCaptureds);
         System.out.println();
         System.out.println("Turn : " + chessMatch.getTurn());
         if (!chessMatch.getCheckMate()){
+            if (quit) {
+                System.out.println("Match terminated by player: " + chessMatch.getPlayer().getDesc());
+                if (chessMatch.getPlayer() == ColorEnum.BLUE) {
+                    System.out.println("Winner by WO: " + ColorEnum.YELLOW.getDesc());
+                }
+                 else {
+                    System.out.println("Winner by WO: " + ColorEnum.BLUE.getDesc());
+                }
+                return;
+            }
             System.out.println("Waiting player: " + chessMatch.getPlayer().getDesc());
             if (chessMatch.getCheck()){
                 System.out.println("CHECK!");
